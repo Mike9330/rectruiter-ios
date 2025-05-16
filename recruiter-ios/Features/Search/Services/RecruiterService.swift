@@ -13,10 +13,10 @@ class RecruiterService: ObservableObject {
         
         // Dummy data
         recruiters = [
-            Recruiter(id: "1", name: "John Smith", company: "Tech Corp", role: "Senior Technical Recruiter", rating: 4.5, reviewCount: 42),
-            Recruiter(id: "2", name: "Sarah Johnson", company: "Startup Inc", role: "Lead Recruiter", rating: 4.8, reviewCount: 31),
-            Recruiter(id: "3", name: "Mike Wilson", company: "Big Tech", role: "Engineering Recruiter", rating: 4.2, reviewCount: 25),
-            Recruiter(id: "4", name: "Emma Brown", company: "Dev Solutions", role: "Technical Recruiter", rating: 4.7, reviewCount: 18)
+            Recruiter(id: "1", company: "Tech Corp", rating: 4.5, headquarters: "San Francisco, CA", industry: "Technology", verified: true, reviewCount: 42, averageRating: 4.5),
+            Recruiter(id: "2", company: "Startup Inc", rating: 4.8, headquarters: "New York, NY", industry: "Software", verified: true, reviewCount: 31, averageRating: 4.8),
+            Recruiter(id: "3", company: "Big Tech", rating: 4.2, headquarters: "Seattle, WA", industry: "Technology", verified: false, reviewCount: 25, averageRating: 4.2),
+            Recruiter(id: "4", company: "Dev Solutions", rating: 4.7, headquarters: "Austin, TX", industry: "Consulting", verified: true, reviewCount: 18, averageRating: 4.7)
         ]
     }
 }

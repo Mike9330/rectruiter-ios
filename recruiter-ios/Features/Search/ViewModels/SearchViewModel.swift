@@ -13,9 +13,9 @@ class SearchViewModel: ObservableObject {
             return recruiters
         }
         return recruiters.filter { recruiter in
-            recruiter.name.localizedCaseInsensitiveContains(searchText) ||
             recruiter.company.localizedCaseInsensitiveContains(searchText) ||
-            recruiter.role.localizedCaseInsensitiveContains(searchText)
+            recruiter.industry.localizedCaseInsensitiveContains(searchText) ||
+            recruiter.headquarters.localizedCaseInsensitiveContains(searchText)
         }
     }
     
