@@ -15,7 +15,7 @@ struct ContentView: View {
             
             ReviewView()
                 .tabItem {
-                    Label("Review", systemImage: "star.fill")
+                    Label("Review", systemImage: "pencil.circle.fill")
                 }
             
             ProfileView()

@@ -1,6 +1,6 @@
 import Foundation
 
-struct Recruiter: Identifiable {
+struct Recruiter: Identifiable, Hashable {
     let id: String
     var company: String
     var rating: Double
@@ -9,4 +9,12 @@ struct Recruiter: Identifiable {
     var verified: Bool
     var reviewCount: Int
     var averageRating: Float
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Recruiter, rhs: Recruiter) -> Bool {
+        lhs.id == rhs.id
+    }
 }
