@@ -112,13 +112,6 @@ struct RecruiterDetailView: View {
     let recruiter: Recruiter
     @Environment(\.colorScheme) var colorScheme
     
-    // Dummy reviews for now
-    let reviews: [Review] = [
-        Review(id: "1", author: "John D.", date: Date().addingTimeInterval(-86400 * 2), rating: 4.5, content: "Great recruiter, very professional and responsive. Found me a great position.", wasHelpful: 12),
-        Review(id: "2", author: "Sarah M.", date: Date().addingTimeInterval(-86400 * 5), rating: 5.0, content: "Extremely helpful throughout the entire process. Would definitely recommend!", wasHelpful: 8),
-        Review(id: "3", author: "Mike R.", date: Date().addingTimeInterval(-86400 * 10), rating: 4.0, content: "Good communication and follow-up. Could be more transparent about salary ranges.", wasHelpful: 15)
-    ]
-    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -174,7 +167,7 @@ struct RecruiterDetailView: View {
                     Text("Recent Reviews")
                         .font(.headline)
                     
-                    ForEach(reviews) { review in
+                    ForEach(recruiter.reviews) { review in
                         ReviewCard(review: review)
                     }
                 }

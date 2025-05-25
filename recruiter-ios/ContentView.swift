@@ -3,21 +3,16 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            HomeView()
+            ReviewView()
                 .tabItem {
-                    Label("Home", systemImage: "house.fill")
+                    Label("Review", systemImage: "pencil.circle.fill")
                 }
             
             SearchView()
                 .tabItem {
                     Label("Search", systemImage: "magnifyingglass")
                 }
-            
-            ReviewView()
-                .tabItem {
-                    Label("Review", systemImage: "pencil.circle.fill")
-                }
-            
+           
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")

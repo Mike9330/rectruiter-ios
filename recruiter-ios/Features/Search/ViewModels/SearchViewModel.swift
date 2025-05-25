@@ -5,8 +5,13 @@ class SearchViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var recruiters: [Recruiter] = []
     @Published var isLoading = false
+    @Published var error: Error?
     
-    private let recruiterService = RecruiterService()
+    private let recruiterService: RecruiterService
+    
+    init() {
+        self.recruiterService = RecruiterService()
+    }
     
     var filteredRecruiters: [Recruiter] {
         if searchText.isEmpty {
