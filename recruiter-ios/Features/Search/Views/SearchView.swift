@@ -73,7 +73,7 @@ struct RecruiterCard: View {
                 HStack(spacing: 4) {
                     Image(systemName: "star.fill")
                         .foregroundStyle(.yellow)
-                    Text(String(format: "%.1f", recruiter.rating))
+                    Text(String(format: "%.1f", recruiter.averageRating))
                         .fontWeight(.medium)
                 }
                 
