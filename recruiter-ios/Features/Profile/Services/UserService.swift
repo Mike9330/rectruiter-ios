@@ -15,6 +15,8 @@ class UserService: ObservableObject {
     struct LoginResponse: Codable {
         let message: String
         let email: String
+        let name: String
+        let profession: String
     }
     
     struct ErrorResponse: Codable {
@@ -44,14 +46,15 @@ class UserService: ObservableObject {
         }
         
         let response = try JSONDecoder().decode(LoginResponse.self, from: data)
+        print("Login Response:", response) // Debug print
         
         await MainActor.run {
             self.currentUser = User(
                 id: UUID().uuidString,
-                name: "Anonymous",
+                name: response.name,
                 email: response.email,
-                title: "User",
-                company: "Unknown"
+                title: response.profession,
+                company: "" // Empty string since we don't need it
             )
         }
     }

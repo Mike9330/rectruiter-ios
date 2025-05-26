@@ -32,11 +32,7 @@ struct ProfileView: View {
                             Text(user.name)
                                 .font(.title2.bold())
                             
-                            Text(user.title)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                            
-                            Text(user.company)
+                            Text(user.title) // This will show the profession
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
@@ -45,8 +41,7 @@ struct ProfileView: View {
                         // Profile Info
                         VStack(spacing: 20) {
                             InfoRow(icon: "envelope.fill", title: "Email", value: user.email)
-                            InfoRow(icon: "briefcase.fill", title: "Company", value: user.company)
-                            InfoRow(icon: "person.text.rectangle.fill", title: "Title", value: user.title)
+                            InfoRow(icon: "person.text.rectangle.fill", title: "Profession", value: user.title)
                         }
                         .padding(20)
                         .background(
