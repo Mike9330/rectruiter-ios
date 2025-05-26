@@ -8,7 +8,11 @@ struct ProfileView: View {
     @State private var company = ""
     @State private var isSigningUp = false
     @State private var showingSignUp = false
-    
+    @State private var password = ""
+    @State private var isSigningIn = false
+    @State private var showError = false
+    @State private var errorMessage = ""
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -109,18 +113,35 @@ struct ProfileView: View {
                                 // Sign in form
                                 VStack(spacing: 16) {
                                     AuthTextField(icon: "envelope.fill", placeholder: "Email", text: $email)
-                                    AuthTextField(icon: "lock.fill", placeholder: "Password", text: .constant(""), isSecure: true)
+                                    AuthTextField(icon: "lock.fill", placeholder: "Password", text: $password, isSecure: true)
                                     
                                     Button {
-                                        // TODO: Implement sign in
+                                        Task {
+                                            isSigningIn = true
+                                            do {
+                                                try await userService.signIn(email: email, password: password)
+                                            } catch {
+                                                errorMessage = error.localizedDescription
+                                                showError = true
+                                            }
+                                            isSigningIn = false
+                                        }
                                     } label: {
-                                        Text("Sign In")
-                                            .frame(maxWidth: .infinity)
-                                            .padding()
-                                            .background(.blue)
-                                            .foregroundStyle(.white)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                                        HStack {
+                                            if isSigningIn {
+                                                ProgressView()
+                                                    .tint(.white)
+                                            } else {
+                                                Text("Sign In")
+                                            }
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(.blue)
+                                        .foregroundStyle(.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                     }
+                                    .disabled(isSigningIn)
                                 }
                             }
                             
@@ -137,6 +158,11 @@ struct ProfileView: View {
             }
             .navigationTitle("Profile")
             .scrollDismissesKeyboard(.immediately)
+            .alert("Error", isPresented: $showError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
         }
     }
 }
