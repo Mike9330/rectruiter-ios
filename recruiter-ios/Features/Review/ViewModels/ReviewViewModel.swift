@@ -13,6 +13,7 @@ class ReviewViewModel: ObservableObject {
     
     private let namesApiURL = "https://recruiter-api-staging.up.railway.app/recruiters/getAllRecruiterNames"
     private let apiKey = "JeikT2EEbvKflszx5T_YsxiEp7byCYLHKxdlyqmqdBo"
+    private let baseURL = "https://recruiter-api-staging.up.railway.app/recruiters"
     
     var canSubmit: Bool {
         if selectedRecruiter == "new" {
@@ -40,6 +41,68 @@ class ReviewViewModel: ObservableObject {
         }
     }
     
+    private func submitNewRecruiter() async throws {
+        guard let url = URL(string: "\(baseURL)/addRecruiter") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(apiKey, forHTTPHeaderField: "API_SECRET_KEY")
+        
+        let review = NewReview(
+            author: "Anonymous",
+            date: ISO8601DateFormatter().string(from: Date()),
+            rating: Double(rating),
+            content: reviewText,  // Use the user's input
+            wasHelpful: 0
+        )
+        
+        let newRecruiter = NewRecruiter(
+            company: newRecruiterName,
+            rating: Double(rating),
+            headquarters: "Unknown",
+            industry: "Unknown",
+            verified: false,
+            reviewcount: 1,
+            averagerating: Float(rating),
+            reviews: [review]
+        )
+        
+        let encoder = JSONEncoder()
+        request.httpBody = try encoder.encode(newRecruiter)
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        if let json = String(data: data, encoding: .utf8) {
+            print("Response:", json)
+        }
+    }
+    
+    private func addReviewToExisting() async throws {
+        guard let url = URL(string: "\(baseURL)/addReview/\(selectedRecruiter)") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(apiKey, forHTTPHeaderField: "API_SECRET_KEY")
+        
+        let review = ExistingReview(
+            id: UUID().uuidString,
+            author: "Anonymous",
+            date: ISO8601DateFormatter().string(from: Date()),
+            rating: Double(rating),
+            content: reviewText,  // Use the user's input
+            washelpful: 0
+        )
+        
+        let encoder = JSONEncoder()
+        request.httpBody = try encoder.encode(review)
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        if let json = String(data: data, encoding: .utf8) {
+            print("Response:", json)
+        }
+    }
+    
     func submitReview() async {
         guard canSubmit else {
             errorMessage = "Please fill in all required fields"
@@ -47,9 +110,17 @@ class ReviewViewModel: ObservableObject {
             return
         }
         
-        // TODO: Implement API call to submit review
-        // For now, just show success
-        showSuccessAlert = true
+        do {
+            if selectedRecruiter == "new" {
+                try await submitNewRecruiter()
+            } else {
+                try await addReviewToExisting()
+            }
+            showSuccessAlert = true
+        } catch {
+            errorMessage = "Error submitting review: \(error)"
+            showErrorAlert = true
+        }
         
         // Reset form
         rating = 0
@@ -58,4 +129,32 @@ class ReviewViewModel: ObservableObject {
             newRecruiterName = ""
         }
     }
+}
+
+struct NewReview: Encodable {
+    let author: String
+    let date: String
+    let rating: Double
+    let content: String
+    let wasHelpful: Int
+}
+
+struct NewRecruiter: Encodable {
+    let company: String
+    let rating: Double
+    let headquarters: String
+    let industry: String
+    let verified: Bool
+    let reviewcount: Int
+    let averagerating: Float
+    let reviews: [NewReview]
+}
+
+struct ExistingReview: Encodable {
+    let id: String
+    let author: String
+    let date: String
+    let rating: Double
+    let content: String
+    let washelpful: Int
 }
