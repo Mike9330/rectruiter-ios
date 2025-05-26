@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ReviewView: View {
     @StateObject private var viewModel = ReviewViewModel()
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         NavigationStack {
@@ -16,6 +17,7 @@ struct ReviewView: View {
                     
                     if viewModel.selectedRecruiter == "new" {
                         TextField("New Recruiter Name", text: $viewModel.newRecruiterName)
+                            .focused($isFocused)
                     }
                 }
                 
@@ -36,6 +38,7 @@ struct ReviewView: View {
                 Section {
                     TextEditor(text: $viewModel.reviewText)
                         .frame(minHeight: 100)
+                        .focused($isFocused)
                         .overlay {
                             if viewModel.reviewText.isEmpty {
                                 Text("Write review here...")
@@ -50,6 +53,7 @@ struct ReviewView: View {
                 Section {
                     Button(action: {
                         Task {
+                            isFocused = false // Dismiss keyboard before submitting
                             await viewModel.submitReview()
                         }
                     }) {
