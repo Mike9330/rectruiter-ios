@@ -4,11 +4,6 @@ struct ReviewView: View {
     @StateObject private var viewModel = ReviewViewModel()
     @EnvironmentObject var userService: UserService
     @FocusState private var isFocused: Bool
-    @State private var email = ""
-    @State private var password = ""
-    @State private var isSigningIn = false
-    @State private var showError = false
-    @State private var errorMessage = ""
     
     var body: some View {
         NavigationStack {
@@ -77,8 +72,8 @@ struct ReviewView: View {
                     await viewModel.fetchRecruiterNames()
                 }
             } else {
-                // Login form directly in ReviewView
-                VStack(spacing: 24) {
+                // Login required message
+                VStack(spacing: 20) {
                     Image(systemName: "person.fill.questionmark")
                         .font(.system(size: 60))
                         .foregroundStyle(.gray)
@@ -87,48 +82,27 @@ struct ReviewView: View {
                     Text("Sign In Required")
                         .font(.title2.bold())
                     
-                    Text("Please sign in to write a review")
+                    Text("Please sign in using the Profile tab to write reviews")
+                        .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
                     
-                    VStack(spacing: 16) {
-                        TextField("Email", text: $email)
-                            .textFieldStyle(.roundedBorder)
-                            .textContentType(.emailAddress)
-                            .autocapitalization(.none)
-                        
-                        SecureField("Password", text: $password)
-                            .textFieldStyle(.roundedBorder)
-                            .textContentType(.password)
-                        
-                        Button {
-                            Task {
-                                isSigningIn = true
-                                do {
-                                    try await userService.signIn(email: email, password: password)
-                                } catch {
-                                    errorMessage = error.localizedDescription
-                                    showError = true
-                                }
-                                isSigningIn = false
-                            }
-                        } label: {
-                            HStack {
-                                if isSigningIn {
-                                    ProgressView()
-                                        .tint(.white)
-                                } else {
-                                    Text("Sign In")
-                                }
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(.blue)
-                            .foregroundStyle(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                        .disabled(isSigningIn)
+                    TabView {
+                        Text("")
                     }
-                    .padding(.horizontal, 40)
+                    .tabViewStyle(.page)
+                    .frame(height: 50)
+                    .overlay(
+                        HStack {
+                            Spacer()
+                            VStack(spacing: 4) {
+                                Image(systemName: "person.fill")
+                                Text("Profile")
+                                    .font(.caption)
+                            }
+                            .foregroundStyle(.blue)
+                            Spacer()
+                        }
+                    )
                 }
                 .padding()
             }
@@ -143,11 +117,6 @@ struct ReviewView: View {
             Button("OK") { }
         } message: {
             Text(viewModel.errorMessage)
-        }
-        .alert("Error", isPresented: $showError) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(errorMessage)
         }
     }
 }

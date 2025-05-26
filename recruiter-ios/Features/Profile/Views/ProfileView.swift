@@ -4,11 +4,10 @@ struct ProfileView: View {
     @EnvironmentObject var userService: UserService
     @State private var name = ""
     @State private var email = ""
-    @State private var title = ""
-    @State private var company = ""
+    @State private var profession = ""
+    @State private var password = ""
     @State private var isSigningUp = false
     @State private var showingSignUp = false
-    @State private var password = ""
     @State private var isSigningIn = false
     @State private var showError = false
     @State private var errorMessage = ""
@@ -32,7 +31,7 @@ struct ProfileView: View {
                             Text(user.name)
                                 .font(.title2.bold())
                             
-                            Text(user.title) // This will show the profession
+                            Text(user.title)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
@@ -73,8 +72,8 @@ struct ProfileView: View {
                                 VStack(spacing: 16) {
                                     AuthTextField(icon: "person.fill", placeholder: "Name", text: $name)
                                     AuthTextField(icon: "envelope.fill", placeholder: "Email", text: $email)
-                                    AuthTextField(icon: "briefcase.fill", placeholder: "Title", text: $title)
-                                    AuthTextField(icon: "building.2.fill", placeholder: "Company", text: $company)
+                                    AuthTextField(icon: "briefcase.fill", placeholder: "Profession", text: $profession)
+                                    AuthTextField(icon: "lock.fill", placeholder: "Password", text: $password, isSecure: true)
                                     
                                     Button {
                                         Task {
@@ -83,8 +82,8 @@ struct ProfileView: View {
                                             try? await userService.signUp(
                                                 name: name,
                                                 email: email,
-                                                title: title,
-                                                company: company
+                                                profession: profession,
+                                                password: password
                                             )
                                         }
                                     } label: {

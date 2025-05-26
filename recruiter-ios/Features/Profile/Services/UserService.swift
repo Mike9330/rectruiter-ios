@@ -12,6 +12,13 @@ class UserService: ObservableObject {
         let password: String
     }
     
+    struct SignUpRequest: Codable {
+        let email: String
+        let name: String
+        let password: String
+        let profession: String
+    }
+    
     struct LoginResponse: Codable {
         let message: String
         let email: String
@@ -46,7 +53,6 @@ class UserService: ObservableObject {
         }
         
         let response = try JSONDecoder().decode(LoginResponse.self, from: data)
-        print("Login Response:", response) // Debug print
         
         await MainActor.run {
             self.currentUser = User(
@@ -54,26 +60,40 @@ class UserService: ObservableObject {
                 name: response.name,
                 email: response.email,
                 title: response.profession,
-                company: "" // Empty string since we don't need it
+                company: ""
             )
         }
     }
     
-    func signUp(name: String, email: String, title: String, company: String) async throws {
+    func signUp(name: String, email: String, profession: String, password: String) async throws {
         isLoading = true
         defer { isLoading = false }
         
-        // Simulate network delay
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        guard let url = URL(string: "\(baseURL)/users/signup") else {
+            throw URLError(.badURL)
+        }
         
-        // TODO: Replace with actual API call
-        currentUser = User(
-            id: UUID().uuidString,
-            name: name,
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(apiKey, forHTTPHeaderField: "API_SECRET_KEY")
+        
+        let signUpRequest = SignUpRequest(
             email: email,
-            title: title,
-            company: company
+            name: name,
+            password: password,
+            profession: profession
         )
+        request.httpBody = try JSONEncoder().encode(signUpRequest)
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        
+        if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+            throw NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: errorResponse.detail])
+        }
+        
+        // After successful signup, sign in automatically
+        try await signIn(email: email, password: password)
     }
     
     func signOut() {
