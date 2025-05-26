@@ -43,11 +43,6 @@ struct ProfileView: View {
                             InfoRow(icon: "person.text.rectangle.fill", title: "Profession", value: user.title)
                         }
                         .padding(20)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(.white)
-                                .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
-                        )
                         .padding(.horizontal)
                         
                         Button("Sign Out", role: .destructive) {
