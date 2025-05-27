@@ -2,6 +2,22 @@ import Foundation
 
 @MainActor
 class ReviewViewModel: ObservableObject {
+    @Published var headquarters = ""
+    @Published var selectedIndustry = "Technology"
+    let industries = [
+        "Technology",
+        "Healthcare",
+        "Finance",
+        "Education",
+        "Manufacturing",
+        "Retail",
+        "Consulting",
+        "Entertainment",
+        "Real Estate",
+        "Energy"
+    ]
+    
+    // Keep existing properties
     @Published var recruiterNames: [String] = []
     @Published var selectedRecruiter = "new"
     @Published var newRecruiterName = ""
@@ -11,13 +27,14 @@ class ReviewViewModel: ObservableObject {
     @Published var showErrorAlert = false
     @Published var errorMessage = ""
     
+    // Keep existing URLs
     private let namesApiURL = "https://recruiter-api-staging.up.railway.app/recruiters/getAllRecruiterNames"
     private let apiKey = "JeikT2EEbvKflszx5T_YsxiEp7byCYLHKxdlyqmqdBo"
     private let baseURL = "https://recruiter-api-staging.up.railway.app/recruiters"
     
     var canSubmit: Bool {
         if selectedRecruiter == "new" {
-            return !newRecruiterName.isEmpty && rating > 0 && !reviewText.isEmpty
+            return !newRecruiterName.isEmpty && rating > 0 && !reviewText.isEmpty && !headquarters.isEmpty
         }
         return rating > 0 && !reviewText.isEmpty
     }
@@ -53,15 +70,15 @@ class ReviewViewModel: ObservableObject {
             author: "Anonymous",
             date: ISO8601DateFormatter().string(from: Date()),
             rating: Double(rating),
-            content: reviewText,  // Use the user's input
+            content: reviewText,
             wasHelpful: 0
         )
         
         let newRecruiter = NewRecruiter(
             company: newRecruiterName,
             rating: Double(rating),
-            headquarters: "Unknown",
-            industry: "Unknown",
+            headquarters: headquarters,
+            industry: selectedIndustry,
             verified: false,
             reviewcount: 1,
             averagerating: Float(rating),
@@ -90,7 +107,7 @@ class ReviewViewModel: ObservableObject {
             author: "Anonymous",
             date: ISO8601DateFormatter().string(from: Date()),
             rating: Double(rating),
-            content: reviewText,  // Use the user's input
+            content: reviewText,
             washelpful: 0
         )
         
@@ -117,44 +134,46 @@ class ReviewViewModel: ObservableObject {
                 try await addReviewToExisting()
             }
             showSuccessAlert = true
+            
+            // Reset form
+            rating = 0
+            reviewText = ""
+            if selectedRecruiter == "new" {
+                newRecruiterName = ""
+                headquarters = ""
+                selectedIndustry = "Technology"
+            }
         } catch {
             errorMessage = "Error submitting review: \(error)"
             showErrorAlert = true
         }
-        
-        // Reset form
-        rating = 0
-        reviewText = ""
-        if selectedRecruiter == "new" {
-            newRecruiterName = ""
-        }
     }
-}
+    
+    struct NewReview: Encodable {
+        let author: String
+        let date: String
+        let rating: Double
+        let content: String
+        let wasHelpful: Int
+    }
 
-struct NewReview: Encodable {
-    let author: String
-    let date: String
-    let rating: Double
-    let content: String
-    let wasHelpful: Int
-}
+    struct NewRecruiter: Encodable {
+        let company: String
+        let rating: Double
+        let headquarters: String
+        let industry: String
+        let verified: Bool
+        let reviewcount: Int
+        let averagerating: Float
+        let reviews: [NewReview]
+    }
 
-struct NewRecruiter: Encodable {
-    let company: String
-    let rating: Double
-    let headquarters: String
-    let industry: String
-    let verified: Bool
-    let reviewcount: Int
-    let averagerating: Float
-    let reviews: [NewReview]
-}
-
-struct ExistingReview: Encodable {
-    let id: String
-    let author: String
-    let date: String
-    let rating: Double
-    let content: String
-    let washelpful: Int
+    struct ExistingReview: Encodable {
+        let id: String
+        let author: String
+        let date: String
+        let rating: Double
+        let content: String
+        let washelpful: Int
+    }
 }

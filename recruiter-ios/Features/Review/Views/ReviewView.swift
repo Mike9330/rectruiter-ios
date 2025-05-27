@@ -21,6 +21,16 @@ struct ReviewView: View {
                         if viewModel.selectedRecruiter == "new" {
                             TextField("New Recruiter Name", text: $viewModel.newRecruiterName)
                                 .focused($isFocused)
+                            
+                            Picker("Industry", selection: $viewModel.selectedIndustry) {
+                                ForEach(viewModel.industries, id: \.self) { industry in
+                                    Text(industry).tag(industry)
+                                }
+                            }
+                            
+                            TextField("Headquarters Location", text: $viewModel.headquarters)
+                                .focused($isFocused)
+                                .textContentType(.addressCity)
                         }
                     }
                     
@@ -108,6 +118,7 @@ struct ReviewView: View {
             }
         }
         .navigationTitle("Review")
+        .navigationBarTitleDisplayMode(.inline)
         .alert("Success", isPresented: $viewModel.showSuccessAlert) {
             Button("OK") { }
         } message: {
