@@ -3,7 +3,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            Text("Feed Coming Soon")
+            FeedView()
                 .tabItem {
                     Label("Feed", systemImage: "newspaper.fill")
                 }
@@ -24,9 +24,4 @@ struct ContentView: View {
                 }
         }
     }
-}
-
-#Preview {
-    ContentView()
-        .environmentObject(UserService())
 }
