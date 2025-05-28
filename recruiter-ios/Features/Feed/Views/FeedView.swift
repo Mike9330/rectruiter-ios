@@ -46,11 +46,15 @@ struct FeedReviewCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
+            Text(review.recruiterName)
+                .font(.headline)
+                .foregroundStyle(.primary)
+            
             HStack {
                 Text(review.author)
-                    .font(.headline)
+                    .font(.subheadline)
                 Spacer()
-                Text(review.date)
+                Text(review.formattedDate)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

@@ -11,6 +11,16 @@ struct FeedReview: Codable, Identifiable {
     let rating: Double
     let content: String
     let wasHelpful: Int
+    let recruiterName: String
+    
+    var formattedDate: String {
+        let dateFormatter = ISO8601DateFormatter()
+        guard let date = dateFormatter.date(from: date) else { return date }
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "MMMM dd, yyyy"
+        return outputFormatter.string(from: date)
+    }
     
     enum CodingKeys: String, CodingKey {
         case rawId = "id"
@@ -19,6 +29,7 @@ struct FeedReview: Codable, Identifiable {
         case rating
         case content
         case wasHelpful = "washelpful"
+        case recruiterName = "company"
     }
     
     init(from decoder: Decoder) throws {
@@ -37,6 +48,7 @@ struct FeedReview: Codable, Identifiable {
         self.author = try container.decode(String.self, forKey: .author)
         self.rating = try container.decode(Double.self, forKey: .rating)
         self.content = try container.decode(String.self, forKey: .content)
+        self.recruiterName = try container.decode(String.self, forKey: .recruiterName)
         
         // Try both washelpful and wasHelpful keys
         if let helpful = try? container.decodeIfPresent(Int.self, forKey: .wasHelpful) {
@@ -54,5 +66,6 @@ struct FeedReview: Codable, Identifiable {
         try container.encode(rating, forKey: .rating)
         try container.encode(content, forKey: .content)
         try container.encode(wasHelpful, forKey: .wasHelpful)
+        try container.encode(recruiterName, forKey: .recruiterName)
     }
 }
