@@ -2,6 +2,9 @@ import Foundation
 
 @MainActor
 class ReviewViewModel: ObservableObject {
+    @Published var userService: UserService
+    
+    // Keep existing properties
     @Published var headquarters = ""
     @Published var selectedIndustry = "Technology"
     let industries = [
@@ -16,8 +19,6 @@ class ReviewViewModel: ObservableObject {
         "Real Estate",
         "Energy"
     ]
-    
-    // Keep existing properties
     @Published var recruiterNames: [String] = []
     @Published var selectedRecruiter = "new"
     @Published var newRecruiterName = ""
@@ -26,6 +27,10 @@ class ReviewViewModel: ObservableObject {
     @Published var showSuccessAlert = false
     @Published var showErrorAlert = false
     @Published var errorMessage = ""
+    
+    init(userService: UserService) {
+        self.userService = userService
+    }
     
     // Keep existing URLs
     private let namesApiURL = "https://recruiter-api-staging.up.railway.app/recruiters/getAllRecruiterNames"
@@ -67,7 +72,7 @@ class ReviewViewModel: ObservableObject {
         request.setValue(apiKey, forHTTPHeaderField: "API_SECRET_KEY")
         
         let review = NewReview(
-            author: "Anonymous",
+            author: userService.currentUser?.name ?? "Anonymous",
             date: ISO8601DateFormatter().string(from: Date()),
             rating: Double(rating),
             content: reviewText,
@@ -104,7 +109,7 @@ class ReviewViewModel: ObservableObject {
         
         let review = ExistingReview(
             id: UUID().uuidString,
-            author: "Anonymous",
+            author: userService.currentUser?.name ?? "Anonymous",
             date: ISO8601DateFormatter().string(from: Date()),
             rating: Double(rating),
             content: reviewText,

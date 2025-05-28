@@ -1,9 +1,13 @@
 import SwiftUI
 
 struct ReviewView: View {
-    @StateObject private var viewModel = ReviewViewModel()
+    @StateObject private var viewModel: ReviewViewModel
     @EnvironmentObject var userService: UserService
     @FocusState private var isFocused: Bool
+    
+    init(userService: UserService) {
+        _viewModel = StateObject(wrappedValue: ReviewViewModel(userService: userService))
+    }
     
     var body: some View {
         NavigationStack {

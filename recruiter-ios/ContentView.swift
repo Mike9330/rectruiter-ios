@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var userService: UserService
+    
     var body: some View {
         TabView {
             FeedView()
@@ -8,7 +10,7 @@ struct ContentView: View {
                     Label("Feed", systemImage: "newspaper.fill")
                 }
             
-            ReviewView()
+            ReviewView(userService: userService)
                 .tabItem {
                     Label("Review", systemImage: "pencil.circle.fill")
                 }
