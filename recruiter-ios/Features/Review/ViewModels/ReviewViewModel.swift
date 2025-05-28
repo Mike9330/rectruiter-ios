@@ -28,6 +28,8 @@ class ReviewViewModel: ObservableObject {
     @Published var showErrorAlert = false
     @Published var errorMessage = ""
     
+    private let reviewedRecruitersKey = "userReviewedRecruiters"
+    
     init(userService: UserService) {
         self.userService = userService
     }
@@ -125,9 +127,27 @@ class ReviewViewModel: ObservableObject {
         }
     }
     
+    private func hasUserReviewed(_ recruiterName: String) -> Bool {
+        let reviewedRecruiters = UserDefaults.standard.stringArray(forKey: reviewedRecruitersKey) ?? []
+        return reviewedRecruiters.contains(recruiterName)
+    }
+    
+    private func markRecruiterAsReviewed(_ recruiterName: String) {
+        var reviewedRecruiters = UserDefaults.standard.stringArray(forKey: reviewedRecruitersKey) ?? []
+        reviewedRecruiters.append(recruiterName)
+        UserDefaults.standard.set(reviewedRecruiters, forKey: reviewedRecruitersKey)
+    }
+    
     func submitReview() async {
         guard canSubmit else {
             errorMessage = "Please fill in all required fields"
+            showErrorAlert = true
+            return
+        }
+        
+        let recruiterName = selectedRecruiter == "new" ? newRecruiterName : selectedRecruiter
+        if hasUserReviewed(recruiterName) {
+            errorMessage = "You have already reviewed this recruiter"
             showErrorAlert = true
             return
         }
@@ -138,9 +158,12 @@ class ReviewViewModel: ObservableObject {
             } else {
                 try await addReviewToExisting()
             }
+            
+            markRecruiterAsReviewed(recruiterName)
+            
             showSuccessAlert = true
             
-            // Reset form
+            // Keep existing reset code...
             rating = 0
             reviewText = ""
             if selectedRecruiter == "new" {
