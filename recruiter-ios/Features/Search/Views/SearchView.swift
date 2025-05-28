@@ -84,18 +84,6 @@ struct RecruiterCard: View {
                     .foregroundStyle(.secondary)
                 
                 Spacer()
-                
-                Button {
-                    // Add contact action
-                } label: {
-                    Text("Contact")
-                        .font(.subheadline.bold())
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(.blue)
-                        .clipShape(Capsule())
-                }
             }
             .font(.subheadline)
         }
