@@ -12,10 +12,15 @@ struct FeedReview: Codable, Identifiable {
     let content: String
     let wasHelpful: Int
     let recruiterName: String
+    let verified: Bool
     
     var formattedDate: String {
-        let dateFormatter = ISO8601DateFormatter()
-        guard let date = dateFormatter.date(from: date) else { return date }
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let date = inputFormatter.date(from: date) else {
+            return "Invalid date"
+        }
         
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "MMMM dd, yyyy"
@@ -30,12 +35,12 @@ struct FeedReview: Codable, Identifiable {
         case content
         case wasHelpful = "washelpful"
         case recruiterName = "company"
+        case verified
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        // Handle both String and Int cases for id
         if let stringId = try? container.decode(String.self, forKey: .rawId) {
             self.rawId = stringId
         } else if let intId = try? container.decode(Int.self, forKey: .rawId) {
@@ -49,12 +54,12 @@ struct FeedReview: Codable, Identifiable {
         self.rating = try container.decode(Double.self, forKey: .rating)
         self.content = try container.decode(String.self, forKey: .content)
         self.recruiterName = try container.decode(String.self, forKey: .recruiterName)
+        self.verified = try container.decode(Bool.self, forKey: .verified)
         
-        // Try both washelpful and wasHelpful keys
         if let helpful = try? container.decodeIfPresent(Int.self, forKey: .wasHelpful) {
             self.wasHelpful = helpful
         } else {
-            self.wasHelpful = 0  // Default to 0 if key doesn't exist
+            self.wasHelpful = 0  
         }
     }
     
@@ -67,5 +72,6 @@ struct FeedReview: Codable, Identifiable {
         try container.encode(content, forKey: .content)
         try container.encode(wasHelpful, forKey: .wasHelpful)
         try container.encode(recruiterName, forKey: .recruiterName)
+        try container.encode(verified, forKey: .verified)
     }
 }

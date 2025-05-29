@@ -29,7 +29,7 @@ class FeedService: ObservableObject {
             
             let decoder = JSONDecoder()
             let reviews = try decoder.decode([FeedReview].self, from: data)
-            self.feedItems = reviews
+            self.feedItems = reviews.filter { $0.verified }
             self.error = nil
         } catch {
             print("Debug decode error: \(error)")

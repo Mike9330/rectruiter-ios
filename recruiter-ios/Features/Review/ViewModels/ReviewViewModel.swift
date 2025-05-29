@@ -183,6 +183,7 @@ class ReviewViewModel: ObservableObject {
         let rating: Double
         let content: String
         let wasHelpful: Int
+        let verified: Bool = false
     }
 
     struct NewRecruiter: Encodable {
@@ -203,5 +204,6 @@ class ReviewViewModel: ObservableObject {
         let rating: Double
         let content: String
         let washelpful: Int
+        let verified: Bool = false
     }
 }

@@ -44,7 +44,7 @@ class RecruiterService: ObservableObject {
             print("Successfully decoded \(recruiters.count) recruiters")
             
             await MainActor.run {
-                self.recruiters = recruiters
+                self.recruiters = recruiters // REVERT: Show all recruiters, not just verified ones
             }
         } catch {
             print("Error fetching recruiters:", error)
