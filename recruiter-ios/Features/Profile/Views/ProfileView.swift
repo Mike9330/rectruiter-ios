@@ -73,13 +73,18 @@ struct ProfileView: View {
                                     Button {
                                         Task {
                                             isSigningUp = true
-                                            defer { isSigningUp = false }
-                                            try? await userService.signUp(
-                                                name: name,
-                                                email: email,
-                                                profession: profession,
-                                                password: password
-                                            )
+                                            do {
+                                                try await userService.signUp(
+                                                    name: name,
+                                                    email: email,
+                                                    profession: profession,
+                                                    password: password
+                                                )
+                                            } catch {
+                                                errorMessage = error.localizedDescription
+                                                showError = true
+                                            }
+                                            isSigningUp = false
                                         }
                                     } label: {
                                         HStack {
@@ -147,7 +152,7 @@ struct ProfileView: View {
             }
             .navigationTitle("Profile")
             .scrollDismissesKeyboard(.immediately)
-            .alert("Error", isPresented: $showError) {
+            .alert(showingSignUp ? "Sign Up Error" : "Sign In Error", isPresented: $showError) {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(errorMessage)
