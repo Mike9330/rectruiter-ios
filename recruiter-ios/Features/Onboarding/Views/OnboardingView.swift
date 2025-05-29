@@ -43,13 +43,13 @@ struct OnboardingView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
                             .padding(.horizontal, 24)
-                            .padding(.bottom, geometry.safeAreaInsets.bottom + 100)
-                        } else {
-                            Spacer()
-                                .frame(height: geometry.safeAreaInsets.bottom + 100)
                         }
+                        
+                        Spacer()
+                            .frame(height: geometry.safeAreaInsets.bottom + 100)
                     }
                     .padding()
+                    .frame(width: geometry.size.width)
                 }
                 .tag(index)
             }
