@@ -3,6 +3,7 @@ import SwiftUI
 struct OnboardingView: View {
     @Binding var hasSeenOnboarding: Bool
     @State private var currentPage = 0
+    @State private var showSignIn = false
     
     var body: some View {
         TabView(selection: $currentPage) {
@@ -28,19 +29,29 @@ struct OnboardingView: View {
                         Spacer()
                         
                         if index == OnboardingItem.items.count - 1 {
-                            Button {
-                                withAnimation {
-                                    hasSeenOnboarding = true
-                                    UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+                            VStack(spacing: 16) {
+                                Button {
+                                    showSignIn = true
+                                } label: {
+                                    Text("Sign In or Create Account")
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(.blue)
+                                        .foregroundStyle(.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
-                            } label: {
-                                Text("Get Started")
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(.blue)
-                                    .foregroundStyle(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                
+                                Button {
+                                    withAnimation {
+                                        hasSeenOnboarding = true
+                                        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+                                    }
+                                } label: {
+                                    Text("Continue as Guest")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                             .padding(.horizontal, 24)
                         }
@@ -53,6 +64,9 @@ struct OnboardingView: View {
                 }
                 .tag(index)
             }
+        }
+        .sheet(isPresented: $showSignIn) {
+            SignInView()
         }
         .tabViewStyle(.page)
         .indexViewStyle(.page(backgroundDisplayMode: .always))
