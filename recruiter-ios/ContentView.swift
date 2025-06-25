@@ -7,6 +7,7 @@ struct ContentView: View {
     var body: some View {
         if !hasSeenOnboarding {
             OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
+                .environmentObject(userService)
         } else {
             TabView {
                 FeedView()

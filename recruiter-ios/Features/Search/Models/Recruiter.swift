@@ -6,6 +6,7 @@ struct ReviewDTO: Codable {
     let author: String
     let rating: Double
     let content: String
+    let verified: Bool
     private let wasHelpfulUpper: Int?
     private let wasHelpfulLower: Int?
     
@@ -14,7 +15,7 @@ struct ReviewDTO: Codable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case date, author, rating, content
+        case date, author, rating, content, verified
         case wasHelpfulUpper = "wasHelpful"
         case wasHelpfulLower = "washelpful"
     }
@@ -26,7 +27,8 @@ struct ReviewDTO: Codable {
             date: Date(), // TODO: Parse date properly
             rating: rating,
             content: content,
-            wasHelpful: wasHelpful
+            wasHelpful: wasHelpful,
+            verified: verified
         )
     }
 }
@@ -53,7 +55,10 @@ struct Recruiter: Identifiable, Hashable, Codable {
     }
     
     var id: String { company }
-    var reviews: [Review] { reviewDTOs.map { $0.toReview() } }
+    var reviews: [Review] { 
+        // Only return verified reviews
+        reviewDTOs.filter { $0.verified }.map { $0.toReview() }
+    }
     
     enum CodingKeys: String, CodingKey {
         case company

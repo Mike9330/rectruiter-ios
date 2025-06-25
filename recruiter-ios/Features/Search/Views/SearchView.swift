@@ -100,6 +100,10 @@ struct RecruiterDetailView: View {
     let recruiter: Recruiter
     @Environment(\.colorScheme) var colorScheme
     
+    var verifiedReviewCount: Int {
+        recruiter.reviews.count // This now only returns verified reviews
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -133,9 +137,9 @@ struct RecruiterDetailView: View {
                             .frame(height: 40)
                         
                         VStack {
-                            Text("\(recruiter.reviewCount)")
+                            Text("\(verifiedReviewCount)")
                                 .font(.title.bold())
-                            Text("Reviews")
+                            Text("Verified Reviews")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
@@ -152,11 +156,28 @@ struct RecruiterDetailView: View {
                 
                 // Reviews
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Recent Reviews")
-                        .font(.headline)
+                    HStack {
+                        Text("Verified Reviews")
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        if recruiter.reviewCount > verifiedReviewCount {
+                            Text("\(recruiter.reviewCount - verifiedReviewCount) pending")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                     
-                    ForEach(recruiter.reviews) { review in
-                        ReviewCard(review: review)
+                    if recruiter.reviews.isEmpty {
+                        Text("No verified reviews yet")
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding()
+                    } else {
+                        ForEach(recruiter.reviews) { review in
+                            ReviewCard(review: review)
+                        }
                     }
                 }
             }

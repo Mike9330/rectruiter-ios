@@ -7,4 +7,5 @@ struct Review: Identifiable {
     let rating: Double
     let content: String
     let wasHelpful: Int
+    let verified: Bool
 }

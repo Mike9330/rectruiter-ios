@@ -3,7 +3,8 @@ import SwiftUI
 struct OnboardingView: View {
     @Binding var hasSeenOnboarding: Bool
     @State private var currentPage = 0
-    @State private var showSignIn = false
+    @State private var showAuth = false
+    @EnvironmentObject var userService: UserService
     
     var body: some View {
         TabView(selection: $currentPage) {
@@ -31,7 +32,7 @@ struct OnboardingView: View {
                         if index == OnboardingItem.items.count - 1 {
                             VStack(spacing: 16) {
                                 Button {
-                                    showSignIn = true
+                                    showAuth = true
                                 } label: {
                                     Text("Sign In or Create Account")
                                         .font(.headline)
@@ -65,8 +66,17 @@ struct OnboardingView: View {
                 .tag(index)
             }
         }
-        .sheet(isPresented: $showSignIn) {
-            SignInView()
+        .sheet(isPresented: $showAuth) {
+            AuthView()
+                .environmentObject(userService)
+        }
+        .onChange(of: userService.currentUser) { user in
+            if user != nil {
+                withAnimation {
+                    hasSeenOnboarding = true
+                    UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+                }
+            }
         }
         .tabViewStyle(.page)
         .indexViewStyle(.page(backgroundDisplayMode: .always))
