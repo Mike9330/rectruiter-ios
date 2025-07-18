@@ -15,16 +15,45 @@ struct FeedReview: Codable, Identifiable {
     let verified: Bool
     
     var formattedDate: String {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd"
+        // Try multiple date formats
+        let dateFormatters: [DateFormatter] = [
+            // ISO8601 format (most likely from API)
+            {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                return formatter
+            }(),
+            // ISO8601 without milliseconds
+            {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+                return formatter
+            }(),
+            // Simple date format
+            {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd"
+                return formatter
+            }(),
+            // ISO8601 with 'Z' suffix
+            {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+                return formatter
+            }()
+        ]
         
-        guard let date = inputFormatter.date(from: date) else {
-            return "Invalid date"
+        // Try to parse with each formatter
+        for formatter in dateFormatters {
+            if let parsedDate = formatter.date(from: date) {
+                let outputFormatter = DateFormatter()
+                outputFormatter.dateFormat = "MMMM dd, yyyy"
+                return outputFormatter.string(from: parsedDate)
+            }
         }
         
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "MMMM dd, yyyy"
-        return outputFormatter.string(from: date)
+        // If all formatters fail, return the original date string
+        return date
     }
     
     enum CodingKeys: String, CodingKey {
