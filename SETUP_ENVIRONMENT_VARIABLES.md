@@ -1,59 +1,60 @@
 # Setting Up Environment Variables with xcconfig Files
 
-## What was created:
-1. **ConfigurationManager.swift** - A manager class that reads values from the auto-generated Info.plist
-2. **Debug.xcconfig** - Debug configuration file
-3. **Release.xcconfig** - Release configuration file
-4. **Staging.xcconfig** - Staging configuration file
-5. **Production.xcconfig** - Production configuration file
+## 🚨 IMPORTANT: Follow these steps to complete the setup
 
-## Manual Xcode Setup Required:
+The ConfigurationManager is currently using temporary fallbacks. Follow these steps to properly configure the xcconfig files:
 
-### Step 1: Add xcconfig files to your project
+## Step 1: Add xcconfig files to Xcode project
 1. Open your project in Xcode
-2. Right-click on the project root in the navigator
+2. In the Project Navigator, right-click on the project root "recruiter-ios"
 3. Select "Add Files to 'recruiter-ios'"
-4. Navigate to the Config folder and select all .xcconfig files
-5. Make sure they are added to the recruiter-ios target
+4. Navigate to `recruiter-ios/Config/` folder
+5. Select all 4 xcconfig files (Debug.xcconfig, Release.xcconfig, Staging.xcconfig, Production.xcconfig)
+6. Click "Add"
+7. Make sure "recruiter-ios" target is selected
 
-### Step 2: Configure Build Settings to use xcconfig files
-1. Select your project in the navigator (top level)
-2. Go to the "Info" tab
-3. Under "Configurations", for each configuration:
-   - Set Debug to use `Debug.xcconfig`
-   - Set Release to use `Release.xcconfig`
-   - (Optional) Create new configurations for Staging and Production
+## Step 2: Configure Build Settings to use xcconfig files
+1. Select your project in the navigator (top level "recruiter-ios")
+2. Go to the "Info" tab (not "Build Settings")
+3. Under "Configurations", you'll see Debug and Release
+4. For **Debug**: Click the dropdown and select "Debug" (this will be `Debug.xcconfig`)
+5. For **Release**: Click the dropdown and select "Release" (this will be `Release.xcconfig`)
 
-### Step 3: Add ConfigurationManager.swift to your project
-1. Right-click on the project root in the navigator
+## Step 3: Add ConfigurationManager to Xcode
+1. In the Project Navigator, right-click on the project root "recruiter-ios"
 2. Select "Add Files to 'recruiter-ios'"
-3. Navigate to Common/Config/ and select ConfigurationManager.swift
-4. Make sure it's added to the recruiter-ios target
+3. Navigate to `recruiter-ios/Common/Config/ConfigurationManager.swift`
+4. Select the file and click "Add"
+5. Make sure "recruiter-ios" target is selected
 
-### Step 4: Verify the setup
+## Step 4: Clean and rebuild
+1. In Xcode, go to Product → Clean Build Folder
+2. Then Product → Build
+
+## Step 5: Verify it's working
+Once configured, you should see the environment variables working and the warning messages should disappear.
+
+## How to verify xcconfig is working:
 1. Build your project
-2. The xcconfig files will automatically add the API_BASE_URL and API_SECRET_KEY to the auto-generated Info.plist
-3. ConfigurationManager will read these values at runtime
+2. Check the console - you should NOT see the warning messages:
+   - "⚠️ WARNING: Using hardcoded API URL. Please configure xcconfig files!"
+   - "⚠️ WARNING: Using hardcoded API key. Please configure xcconfig files!"
+3. If you still see warnings, the xcconfig files aren't properly configured
 
-## How it works:
-- The xcconfig files define `INFOPLIST_KEY_API_BASE_URL` and `INFOPLIST_KEY_API_SECRET_KEY`
-- These get automatically added to the Info.plist that Xcode generates
-- ConfigurationManager reads these values using `Bundle.main.object(forInfoPlist:)`
-- If the values aren't found, it falls back to the default staging values
+## What the xcconfig files contain:
+- **Debug.xcconfig**: Staging API URL and key
+- **Release.xcconfig**: Staging API URL and key  
+- **Staging.xcconfig**: Staging API URL and key
+- **Production.xcconfig**: Production API URL and placeholder key
 
-## Files Updated:
+## Files that use ConfigurationManager:
 - RecruiterService.swift
 - FeedService.swift  
 - UserService.swift
 - ReviewViewModel.swift
 
-All now use `ConfigurationManager.apiBaseURL` and `ConfigurationManager.apiSecretKey` instead of hardcoded values.
-
 ## Security Note:
-The production xcconfig file contains a placeholder API key. You should:
-1. Replace `YOUR_PRODUCTION_API_KEY_HERE` with your actual production API key
-2. Never commit production API keys to version control
-3. Consider using a separate, private repository for production configurations
+Once you set up Production.xcconfig, replace `YOUR_PRODUCTION_API_KEY_HERE` with your actual production API key.
 
-## No Info.plist conflicts:
-This solution works with Xcode's auto-generated Info.plist system, so you won't get the "Multiple commands produce Info.plist" error.
+## Need help?
+If you're still seeing the fatal error or warnings after following these steps, the xcconfig files aren't properly linked to your build configurations in Xcode.
