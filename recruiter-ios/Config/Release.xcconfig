@@ -1,0 +1,7 @@
+// Release Configuration
+API_BASE_URL = https://recruiter-api-staging.up.railway.app
+API_SECRET_KEY = JeikT2EEbvKflszx5T_YsxiEp7byCYLHKxdlyqmqdBo
+
+// Add these values to the auto-generated Info.plist
+INFOPLIST_KEY_API_BASE_URL = $(API_BASE_URL)
+INFOPLIST_KEY_API_SECRET_KEY = $(API_SECRET_KEY)

@@ -4,8 +4,8 @@ class RecruiterService: ObservableObject {
     @Published var recruiters: [Recruiter] = []
     @Published var isLoading = false
     
-    private let apiURL = "https://recruiter-api-staging.up.railway.app/recruiters/getAllRecruiters"
-    private let apiKey = "JeikT2EEbvKflszx5T_YsxiEp7byCYLHKxdlyqmqdBo"
+    private let apiURL = "\(ConfigurationManager.apiBaseURL)/recruiters/getAllRecruiters"
+    private let apiKey = ConfigurationManager.apiSecretKey
     
     struct ErrorResponse: Codable {
         let detail: String

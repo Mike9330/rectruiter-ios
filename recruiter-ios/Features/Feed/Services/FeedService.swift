@@ -5,8 +5,8 @@ class FeedService: ObservableObject {
     @Published var isLoading = false
     @Published var error: String?
     
-    private let baseURL = "https://recruiter-api-staging.up.railway.app"
-    private let apiKey = "JeikT2EEbvKflszx5T_YsxiEp7byCYLHKxdlyqmqdBo"
+    private let baseURL = ConfigurationManager.apiBaseURL
+    private let apiKey = ConfigurationManager.apiSecretKey
     
     @MainActor
     func fetchFeed() async {

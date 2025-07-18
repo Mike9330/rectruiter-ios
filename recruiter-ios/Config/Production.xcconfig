@@ -1,0 +1,7 @@
+// Production Configuration
+API_BASE_URL = https://recruiter-api-production.up.railway.app
+API_SECRET_KEY = YOUR_PRODUCTION_API_KEY_HERE
+
+// Add these values to the auto-generated Info.plist
+INFOPLIST_KEY_API_BASE_URL = $(API_BASE_URL)
+INFOPLIST_KEY_API_SECRET_KEY = $(API_SECRET_KEY)

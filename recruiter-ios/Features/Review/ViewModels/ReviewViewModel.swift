@@ -34,10 +34,10 @@ class ReviewViewModel: ObservableObject {
         self.userService = userService
     }
     
-    // Keep existing URLs
-    private let namesApiURL = "https://recruiter-api-staging.up.railway.app/recruiters/getAllRecruiterNames"
-    private let apiKey = "JeikT2EEbvKflszx5T_YsxiEp7byCYLHKxdlyqmqdBo"
-    private let baseURL = "https://recruiter-api-staging.up.railway.app/recruiters"
+    // Updated URLs to use ConfigurationManager
+    private let namesApiURL = "\(ConfigurationManager.apiBaseURL)/recruiters/getAllRecruiterNames"
+    private let apiKey = ConfigurationManager.apiSecretKey
+    private let baseURL = "\(ConfigurationManager.apiBaseURL)/recruiters"
     
     var canSubmit: Bool {
         if selectedRecruiter == "new" {
